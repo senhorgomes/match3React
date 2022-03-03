@@ -1,7 +1,7 @@
 import { randomIntGenerator } from "../../helpers/randomIntGenerator";
 import '../Generator/generator.css';
 import {useEffect, useState} from 'react';
-
+import {checkForMacthesRowsThree} from "../CheckForMatches/CheckForMatchesRows/checkForMatchesRows"
 function Generator() {
   const [generatedSeedArray, setGeneratedSeedArray] = useState([]);
   const [selectedGem, setSelectedGem] = useState({});
@@ -102,6 +102,7 @@ function Generator() {
     setGeneratedSeedArray(copyOfGenerateSeed)
     setSelectedGem({})
     setReplacedGem({})
+    checkForMacthesRowsThree(generatedSeedArray)
   }
   function dragDrop(e) {
     //dropped on
