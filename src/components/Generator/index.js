@@ -1,7 +1,7 @@
 import { randomIntGenerator } from "../../helpers/randomIntGenerator";
 import '../Generator/generator.css';
-import {useEffect, useState} from 'react';
-import {checkForMacthesRowsThree} from "../CheckForMatches/CheckForMatchesRows/checkForMatchesRows"
+import { useEffect, useState } from 'react';
+import { checkForMatchesRowsThree } from "../CheckForMatches/CheckForMatchesRows/checkForMatchesRows"
 function Generator() {
   const [generatedSeedArray, setGeneratedSeedArray] = useState([]);
   const [selectedGem, setSelectedGem] = useState({});
@@ -44,12 +44,8 @@ function Generator() {
             && (yArray[y - 1][x] === gemColorArray[randomNum])
             && (yArray[y - 2][x] === gemColorArray[randomNum])
           )) {
-          console.log("welp", y, x, yArray[y][x - 1], yArray[y][x - 2])
           if (randomNum === 0) {
-            console.log("spoof")
-            console.log(randomNum)
             randomNum = randomIntGenerator(4) + 1
-            console.log("after reset", randomNum)
             yArray[y].push(gemColorArray[randomNum]);
           } else {
             yArray[y].push(gemColorArray[randomIntGenerator(randomNum)]);
@@ -74,12 +70,14 @@ function Generator() {
   useEffect(() => {
     generatedSeed()
   }, [])
-  console.log("withing generated seed", generatedSeedArray)
+  useEffect(() => {
+  }, [])
+  // console.log("withing generated seed", generatedSeedArray)
 
   function dragStart(e) {
-    console.log("dragStart",e.target.className)
+    // console.log("dragStart",e.target.className)
     // setSelectedGem(e.target.className);
-    setSelectedGem({color: e.target.className, id: e.target.id});
+    setSelectedGem({ color: e.target.className, id: e.target.id });
   }
   const copyOfGenerateSeed = [...generatedSeedArray];
   // useEffect(() => {
@@ -96,13 +94,13 @@ function Generator() {
     // console.log(copyOfGenerateSeed)
     copyOfGenerateSeed.splice(replacedGem.id, 1, selectedGem.color)
     copyOfGenerateSeed.splice(selectedGem.id, 1, replacedGem.color)
-    console.log("copy", copyOfGenerateSeed)
+    // console.log("copy", copyOfGenerateSeed)
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
     setGeneratedSeedArray(copyOfGenerateSeed)
+    checkForMatchesRowsThree(generatedSeedArray)
     setSelectedGem({})
     setReplacedGem({})
-    checkForMacthesRowsThree(generatedSeedArray)
   }
   function dragDrop(e) {
     //dropped on
@@ -110,13 +108,13 @@ function Generator() {
     //then setState 
     // setReplaceGem(e.target.className)
     // e.target.setAttribute("class", selectedGem)
-    setReplacedGem({color: e.target.className, id: e.target.id});
+    setReplacedGem({ color: e.target.className, id: e.target.id });
     //trying to modify the generateSeed array via splice then set it
     // copyOfGenerateSeed.splice(selectedGem.id, 0, selectedGem.color)
     // trying to set it directly but it doesn't work
     // generatedSeedArray[selectedGem.id] = selectedGem.color
   }
-  
+
   const generateDivs = generatedSeedArray.map((letter, index) => {
     // if (Array.isArray(letter)) {
     //   
@@ -137,6 +135,25 @@ function Generator() {
     />
 
   })
+  function check() {
+    if (checkForMatchesRowsThree(generatedSeedArray)) {
+      copyOfGenerateSeed.splice(checkForMatchesRowsThree(generatedSeedArray), 3, "white", "white", "white")
+      console.log("after adding white", copyOfGenerateSeed)
+      setGeneratedSeedArray(copyOfGenerateSeed)
+    }
+  }
+  // function check() {
+  //   if (checkForMatchesRowsThree(generatedSeedArray)) {
+  //     copyOfGenerateSeed.splice(checkForMatchesRowsThree(generatedSeedArray), 3, "white", "white", "white")
+  //     console.log("after adding white", copyOfGenerateSeed)
+  //     setGeneratedSeedArray(copyOfGenerateSeed)
+  //   }
+  // }
+  useEffect(() => {
+    check()
+
+  }, [check])
+  // checkForMatchesRowsThree(generatedSeedArray)
 
   return (
     <div id="gem">
