@@ -67,11 +67,6 @@ function Generator() {
     )
     setGeneratedSeedArray(finalGemArray)
   }
-  useEffect(() => {
-    generatedSeed()
-  }, [])
-  useEffect(() => {
-  }, [])
   // console.log("withing generated seed", generatedSeedArray)
 
   function dragStart(e) {
@@ -98,7 +93,7 @@ function Generator() {
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
     setGeneratedSeedArray(copyOfGenerateSeed)
-    checkForMatchesRowsThree(generatedSeedArray)
+    // checkForMatchesRowsThree(generatedSeedArray)
     setSelectedGem({})
     setReplacedGem({})
   }
@@ -114,7 +109,48 @@ function Generator() {
     // trying to set it directly but it doesn't work
     // generatedSeedArray[selectedGem.id] = selectedGem.color
   }
+  function check() {
+    let checkedMatches = checkForMatchesRowsThree([...generatedSeedArray])
+    const originalCopyOfGeneratedSeed = [...copyOfGenerateSeed]
+    // this now checks for matches of three in rows
+    // it modifies the color above, but now the issues is I need to loop and go backwards
+    // for (let index = 0; index < array.length; index++) {
+    //   const element = array[index];
+      
+    // }
+    if (checkedMatches) {
+      // copyOfGenerateSeed.splice(checkedMatches, 3, copyOfGenerateSeed[checkedMatches-8], copyOfGenerateSeed[checkedMatches-7], copyOfGenerateSeed[checkedMatches-6])
+      // // copyOfGenerateSeed[checkedMatches - 8] = 
+      // copyOfGenerateSeed.splice(checkedMatches - 8, 3, copyOfGenerateSeed[checkedMatches-16], copyOfGenerateSeed[checkedMatches-15], copyOfGenerateSeed[checkedMatches-14])
+      // copyOfGenerateSeed.splice(checkedMatches - 16, 3, "white", "white", "white")
+      // cant move to the next one because it is negative
+      // each loop -8, then condition is if i < 0
+      let newStartingIndexForNewColors = 0;
+      for (let index = checkedMatches; index > 7; index -= 8) {
+        copyOfGenerateSeed.splice(index, 3, originalCopyOfGeneratedSeed[index-8], originalCopyOfGeneratedSeed[index-7], originalCopyOfGeneratedSeed[index-6])
+        newStartingIndexForNewColors = index;
+      }
+      copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
+      console.log(copyOfGenerateSeed, checkedMatches - 8)
+      setGeneratedSeedArray(copyOfGenerateSeed)
+    }
+  }
+  // function check() {
+  //   if (checkForMatchesRowsThree(generatedSeedArray)) {
+  //     copyOfGenerateSeed.splice(checkForMatchesRowsThree(generatedSeedArray), 3, "white", "white", "white")
+  //     console.log("after adding white", copyOfGenerateSeed)
+  //     setGeneratedSeedArray(copyOfGenerateSeed)
+  //   }
+  // }
+  // test one make it so when he state is updated run the check function
+  useEffect(() => {
+    generatedSeed()
 
+  }, [])
+  useEffect(() => {
+    check()
+
+  }, [replacedGem])
   const generateDivs = generatedSeedArray.map((letter, index) => {
     // if (Array.isArray(letter)) {
     //   
@@ -135,24 +171,6 @@ function Generator() {
     />
 
   })
-  function check() {
-    if (checkForMatchesRowsThree(generatedSeedArray)) {
-      copyOfGenerateSeed.splice(checkForMatchesRowsThree(generatedSeedArray), 3, "white", "white", "white")
-      console.log("after adding white", copyOfGenerateSeed)
-      setGeneratedSeedArray(copyOfGenerateSeed)
-    }
-  }
-  // function check() {
-  //   if (checkForMatchesRowsThree(generatedSeedArray)) {
-  //     copyOfGenerateSeed.splice(checkForMatchesRowsThree(generatedSeedArray), 3, "white", "white", "white")
-  //     console.log("after adding white", copyOfGenerateSeed)
-  //     setGeneratedSeedArray(copyOfGenerateSeed)
-  //   }
-  // }
-  useEffect(() => {
-    check()
-
-  }, [check])
   // checkForMatchesRowsThree(generatedSeedArray)
 
   return (
