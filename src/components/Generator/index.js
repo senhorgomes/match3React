@@ -11,7 +11,8 @@ function Generator() {
   const [replacedGem, setReplacedGem] = useState({});
   // Score needs to put the amount of stats you have
   // use those variables as a bar
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState({ammo:0,energy:0,shield:0});
+  // const [score, setScore] = useState(0);
   //Tiles are A B C D E F
 
   //Generate array with 5 A x 5 As
@@ -78,7 +79,7 @@ function Generator() {
   function dragStart(e) {
     // console.log("dragStart",e.target.className)
     // setSelectedGem(e.target.className);
-    setSelectedGem({ color: e.target.src, id: e.target.id });
+    setSelectedGem({ color: e.target.src, name: e.target.name,id: e.target.id });
   }
   const copyOfGenerateSeed = [...generatedSeedArray];
   // useEffect(() => {
@@ -90,11 +91,9 @@ function Generator() {
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
 
-    // console.log("replaced", generatedSeedArray[replacedGem.id])
-    // console.log("selected", selectedGem)
-    // console.log(copyOfGenerateSeed)
-    copyOfGenerateSeed.splice(replacedGem.id, 1, selectedGem.color)
-    copyOfGenerateSeed.splice(selectedGem.id, 1, replacedGem.color)
+    // {"image":red, "color":"red" }
+    copyOfGenerateSeed.splice(replacedGem.id, 1, {"image":selectedGem.color, "color":selectedGem.name})
+    copyOfGenerateSeed.splice(selectedGem.id, 1, {"image":replacedGem.color, "color":replacedGem.name})
     // console.log("copy", copyOfGenerateSeed)
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
@@ -108,7 +107,7 @@ function Generator() {
     //grab state of dropped on
     //then setState 
     // setReplacedGem({ color: e.target.className, id: e.target.id });
-    setReplacedGem({ color: e.target.src, id: e.target.id });
+    setReplacedGem({ color: e.target.src, id: e.target.id, name: e.target.name });
     //trying to modify the generateSeed array via splice then set it
     // copyOfGenerateSeed.splice(selectedGem.id, 0, selectedGem.color)
     // trying to set it directly but it doesn't work
@@ -229,7 +228,8 @@ function Generator() {
     //was a div
     return <img
       key={index}
-      src={letter}
+      name={letter.color}
+      src={letter.image}
       draggable="true"
       onDragLeave={(e) => e.preventDefault()}
       onDragEnter={(e) => e.preventDefault()}
@@ -249,7 +249,9 @@ function Generator() {
       <div id="head">
         <div id="healthbar"></div>
       </div>
-      <h2>Score: {score}</h2>
+      <h2>Ammo: {score.ammo}</h2>
+      <h2>Energy: {score.energy}</h2>
+      <h2>Shield: {score.shield}</h2>
       <div id="gem">
         {generateDivs}
       </div>

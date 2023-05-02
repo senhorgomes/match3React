@@ -6,4 +6,4 @@ import black from "../images/powerupRed_shield.png"
 import purple from "../images/pill_yellow.png"
 
 // export const gemColorArray = ["red", "blue", "yellow", "green", "black", "purple"];
-export const gemColorArray = [red, blue, yellow, green, black, purple];
+export const gemColorArray = [{"image":red, "color":"red" }, {"image":blue, "color":"blue"}, {"image":yellow, "color":"yellow"}, {"image":green, "color":"green"}, {"image":black, "color":"black"}, {"image":purple,"color":"purple"}];

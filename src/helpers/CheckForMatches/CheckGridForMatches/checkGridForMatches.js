@@ -28,7 +28,7 @@ export function checkGridForMatches(seedStateArray, setSeedStateArray, gemColorA
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 16, 1, gemColorArray[randomIntGenerator(5)])
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 24, 1, gemColorArray[randomIntGenerator(5)])
       console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
-      setScore(prev => prev += 3)
+      // setScore(prev => prev += 3)
       setSeedStateArray(copyOfGenerateSeed)
     }
   }
@@ -43,6 +43,7 @@ export function checkGridForMatches(seedStateArray, setSeedStateArray, gemColorA
     // each loop -8, then condition is if i < 0
     console.log("LINE 144", checkedMatchesRows < 8)
     if (checkedMatchesRows < 8) {
+      
       copyOfGenerateSeed.splice(checkedMatchesRows, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
       console.log("inside if", checkedMatchesRows)
       setScore(prev => prev += 3)
@@ -56,7 +57,7 @@ export function checkGridForMatches(seedStateArray, setSeedStateArray, gemColorA
       // Generates new colors
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
       console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
-      setScore(prev => prev += 3)
+      setScore(prev => ({...prev, ammo: prev.ammo += 3 }))
       setSeedStateArray(copyOfGenerateSeed)
     }
   }
