@@ -9,49 +9,49 @@
 .gem {
   height: 60px;
   width: 60px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 5px
 }
 .red {
-  background-color: red;
+  /* background-color: red; */
   height: 60px;
   width: 60px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 5px
 }
 .blue {
-  background-color: blue;
+  /* background-color: blue; */
   height: 60px;
   width: 60px;
   border-radius: 50%;
   margin: 5px
 }
 .yellow {
-  background-color: yellow;
+  /* background-color: yellow; */
   height: 60px;
   width: 60px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 5px
 }
 .green {
-  background-color: green;
+  /* background-color: green; */
   height: 60px;
   width: 60px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 5px
 }
 .black {
-  background-color: black;
+  /* background-color: black; */
   height: 60px;
   width: 60px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 5px
 }
 .purple {
-  background-color: purple;
+  /* background-color: purple; */
   height: 60px;
   width: 60px;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 5px
 }
 .white {
@@ -60,4 +60,14 @@
   width: 60px;
   border-radius: 50%;
   margin: 5px
+}
+#head {
+  border: 4px solid black;
+  height: 20px;
+  width: 200px;
+}
+#healthbar {
+  background-color: green;
+  height: 100%;
+  width: 0%;
 }
