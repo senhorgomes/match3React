@@ -98,7 +98,7 @@ function Generator() {
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
     setGeneratedSeedArray(copyOfGenerateSeed).then(()=>{
-      
+      replaceGrid(generatedSeedArray, gemColorArray)
     })
     // checkForMatchesRowsThree(generatedSeedArray)
     setSelectedGem({})
@@ -124,7 +124,6 @@ function Generator() {
   useEffect(() => {
     // Idea is that everytime if it is going to check for matches in the array, regardless if something was dragged or not
     const checkingIntervalForMatches = setInterval(() => {
-      console.log(checkForMatchesRowsThree([...generatedSeedArray]));
       //This returns 5
       //   if(checkForMatchesRowsThree([...generatedSeedArray])){
       //     let checkedMatchesRows = checkForMatchesRowsThree([...generatedSeedArray])

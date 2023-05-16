@@ -75,7 +75,7 @@ let buffer = [];
 //   // checkGridForMatches()
 //   // return false
 // }
-export function replaceGrid(seedStateArray, gemColorArray, setScore) {
+export function replaceGrid(seedStateArray, gemColorArray) {
   let buffer = [];
   // Run check for matches once and n+1 times instead of using setInterval
   let checkedMatchesRows = checkForMatchesRowsThree([...seedStateArray])
