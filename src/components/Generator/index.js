@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { checkForMatchesRowsThree } from "../../helpers/CheckForMatches/CheckForMatchesRows/checkForMatchesRows"
 import { checkForMatchesColumnsThree } from "../../helpers/CheckForMatches/CheckForMatchesColumns/checkForMatchesColumns"
 import { gemColorArray } from "../../constants/constants";
-import { checkGridForMatches } from "../../helpers/CheckForMatches/CheckGridForMatches/checkGridForMatches";
+import { replaceGrid } from "../../helpers/CheckForMatches/CheckGridForMatches/checkGridForMatches";
 function Generator() {
   const [generatedSeedArray, setGeneratedSeedArray] = useState([]);
   const [selectedGem, setSelectedGem] = useState({});
@@ -97,7 +97,9 @@ function Generator() {
     // console.log("copy", copyOfGenerateSeed)
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
-    setGeneratedSeedArray(copyOfGenerateSeed)
+    setGeneratedSeedArray(copyOfGenerateSeed).then(()=>{
+      
+    })
     // checkForMatchesRowsThree(generatedSeedArray)
     setSelectedGem({})
     setReplacedGem({})
@@ -112,71 +114,6 @@ function Generator() {
     // copyOfGenerateSeed.splice(selectedGem.id, 0, selectedGem.color)
     // trying to set it directly but it doesn't work
     // generatedSeedArray[selectedGem.id] = selectedGem.color
-  }
-  function check() {
-    let checkedMatchesRows = checkForMatchesRowsThree([...generatedSeedArray])
-    let checkedMatchesColumns = checkForMatchesColumnsThree([...generatedSeedArray])
-    //Copying one array here
-    //The function uses two copies of it?
-    //Yes because one needs to remain unchaged so it can grab the previous values.
-    //The double arrays allows me to know the positions of previous gems
-    const originalCopyOfGeneratedSeed = [...generatedSeedArray]
-    if (checkedMatchesColumns !== false) {
-      console.log("INSIDE LINE 119", checkedMatchesColumns)
-      // Runs it only once if the 
-      if (checkedMatchesColumns < 24) {
-        console.log("INSIDE LINE 122", checkedMatchesColumns)
-        //First replace the three matched ones
-        copyOfGenerateSeed.splice(checkedMatchesColumns, 1, gemColorArray[randomIntGenerator(5)])
-        copyOfGenerateSeed.splice(checkedMatchesColumns - 8, 1, gemColorArray[randomIntGenerator(5)])
-        copyOfGenerateSeed.splice(checkedMatchesColumns - 16, 1, gemColorArray[randomIntGenerator(5)])
-        setScore(prev => prev += 3)
-        setGeneratedSeedArray(copyOfGenerateSeed)
-      } else {
-        //Out of the three matched in each column, grab the bottom one and replace it with the color that is three rows above. Do this for every row of the matched column until it reaches the fourth row
-        let newStartingIndexForNewColors = 0;
-        for (let index = checkedMatchesColumns; index > 23; index -= 8) {
-          copyOfGenerateSeed.splice(index, 1, originalCopyOfGeneratedSeed[index - 24])
-          newStartingIndexForNewColors = index;
-        }
-        console.log("LINE 136", newStartingIndexForNewColors)
-        // // Generates new colors for the first three of the matched column
-        copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 1, gemColorArray[randomIntGenerator(5)])
-        copyOfGenerateSeed.splice(newStartingIndexForNewColors - 16, 1, gemColorArray[randomIntGenerator(5)])
-        copyOfGenerateSeed.splice(newStartingIndexForNewColors - 24, 1, gemColorArray[randomIntGenerator(5)])
-        console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
-        setScore(prev => prev += 3)
-        setGeneratedSeedArray(copyOfGenerateSeed)
-      }
-    }
-    // this now checks for matches of three in rows
-    // it modifies the color above, but now the issues is I need to loop and go backwards
-    // for (let index = 0; index < array.length; index++) {
-    //   const element = array[index];
-
-    // }
-    if (checkedMatchesRows !== false) {
-      // cant move to the next one because it is negative
-      // each loop -8, then condition is if i < 0
-      console.log("LINE 144", checkedMatchesRows < 8)
-      if (checkedMatchesRows < 8) {
-        copyOfGenerateSeed.splice(checkedMatchesRows, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-        console.log("inside if", checkedMatchesRows)
-        setScore(prev => prev += 3)
-        setGeneratedSeedArray(copyOfGenerateSeed)
-      } else {
-        let newStartingIndexForNewColors = 0;
-        for (let index = checkedMatchesRows; index > 7; index -= 8) {
-          copyOfGenerateSeed.splice(index, 3, originalCopyOfGeneratedSeed[index - 8], originalCopyOfGeneratedSeed[index - 7], originalCopyOfGeneratedSeed[index - 6])
-          newStartingIndexForNewColors = index;
-        }
-        // Generates new colors
-        copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-        console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
-        setScore(prev => prev += 3)
-        setGeneratedSeedArray(copyOfGenerateSeed)
-      }
-    }
   }
   // test one make it so when he state is updated run the check function
   useEffect(() => {
@@ -212,7 +149,7 @@ function Generator() {
       //     setGeneratedSeedArray(copyOfGenerateSeed)
       //   }
       //   }
-      checkGridForMatches(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore)
+      replaceGrid(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore)
       document.getElementById("healthbar").style.setProperty('width',`${score}%`);
     }, 250)
     // check()
