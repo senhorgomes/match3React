@@ -9,6 +9,7 @@ function Generator() {
   const [generatedSeedArray, setGeneratedSeedArray] = useState([]);
   const [selectedGem, setSelectedGem] = useState({});
   const [replacedGem, setReplacedGem] = useState({});
+  const [movedItem, setMovedItem] = useState(false);
   // Score needs to put the amount of stats you have
   // use those variables as a bar
   const [score, setScore] = useState({ammo:0,energy:0,shield:0});
@@ -97,9 +98,8 @@ function Generator() {
     // console.log("copy", copyOfGenerateSeed)
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
-    setGeneratedSeedArray(copyOfGenerateSeed).then(()=>{
-      replaceGrid(generatedSeedArray, gemColorArray)
-    })
+    setMovedItem(true)
+    setGeneratedSeedArray(copyOfGenerateSeed)
     // checkForMatchesRowsThree(generatedSeedArray)
     setSelectedGem({})
     setReplacedGem({})
@@ -120,41 +120,54 @@ function Generator() {
     generatedSeed()
 
   }, [])
+  useEffect(()=> {
+    if(movedItem){
+
+      const imagesOfGrid = replaceGrid(generatedSeedArray, gemColorArray);
+        let timerForReplacementOfGrids = 1000;
+        if (!imagesOfGrid) return;
+        imagesOfGrid.forEach((image)=>{
+          setTimeout(()=>{setGeneratedSeedArray(image)
+            timerForReplacementOfGrids += 1000;
+          }, timerForReplacementOfGrids)
+        })
+    }
+  }, [generatedSeedArray])
   // Bug: when a match is made and the new colors that replace the matched ones create a new match, it doesnt replace it but instead creates an infinite loop
-  useEffect(() => {
-    // Idea is that everytime if it is going to check for matches in the array, regardless if something was dragged or not
-    const checkingIntervalForMatches = setInterval(() => {
-      //This returns 5
-      //   if(checkForMatchesRowsThree([...generatedSeedArray])){
-      //     let checkedMatchesRows = checkForMatchesRowsThree([...generatedSeedArray])
-      // const originalCopyOfGeneratedSeed = [...copyOfGenerateSeed]
-      // let newStartingIndexForNewColors = 0;
+  // useEffect(() => {
+  //   // Idea is that everytime if it is going to check for matches in the array, regardless if something was dragged or not
+  //   const checkingIntervalForMatches = setInterval(() => {
+  //     //This returns 5
+  //     //   if(checkForMatchesRowsThree([...generatedSeedArray])){
+  //     //     let checkedMatchesRows = checkForMatchesRowsThree([...generatedSeedArray])
+  //     // const originalCopyOfGeneratedSeed = [...copyOfGenerateSeed]
+  //     // let newStartingIndexForNewColors = 0;
 
-      // // Generates new colors
-      // if(newStartingIndexForNewColors < 8){
-      //   copyOfGenerateSeed.splice(newStartingIndexForNewColors, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-      //   console.log("inside if", checkedMatchesRows)
-      //   setScore(prev => prev += 3)
-      //   setGeneratedSeedArray(copyOfGenerateSeed)
-      // } else {
-      //     for (let index = checkedMatchesRows; index > 7; index -= 8) {
-      //       console.log(index)
-      //       copyOfGenerateSeed.splice(index, 3, originalCopyOfGeneratedSeed[index-8], originalCopyOfGeneratedSeed[index-7], originalCopyOfGeneratedSeed[index-6])
-      //       newStartingIndexForNewColors = index;
-      //     }
-      //     copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-      //     console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
-      //     setScore(prev => prev += 3)
-      //     setGeneratedSeedArray(copyOfGenerateSeed)
-      //   }
-      //   }
-      replaceGrid(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore)
-      document.getElementById("healthbar").style.setProperty('width',`${score}%`);
-    }, 250)
-    // check()
-    return () => clearInterval(checkingIntervalForMatches)
+  //     // // Generates new colors
+  //     // if(newStartingIndexForNewColors < 8){
+  //     //   copyOfGenerateSeed.splice(newStartingIndexForNewColors, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
+  //     //   console.log("inside if", checkedMatchesRows)
+  //     //   setScore(prev => prev += 3)
+  //     //   setGeneratedSeedArray(copyOfGenerateSeed)
+  //     // } else {
+  //     //     for (let index = checkedMatchesRows; index > 7; index -= 8) {
+  //     //       console.log(index)
+  //     //       copyOfGenerateSeed.splice(index, 3, originalCopyOfGeneratedSeed[index-8], originalCopyOfGeneratedSeed[index-7], originalCopyOfGeneratedSeed[index-6])
+  //     //       newStartingIndexForNewColors = index;
+  //     //     }
+  //     //     copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
+  //     //     console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
+  //     //     setScore(prev => prev += 3)
+  //     //     setGeneratedSeedArray(copyOfGenerateSeed)
+  //     //   }
+  //     //   }
+  //     replaceGrid(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore)
+  //     document.getElementById("healthbar").style.setProperty('width',`${score}%`);
+  //   }, 250)
+  //   // check()
+  //   return () => clearInterval(checkingIntervalForMatches)
 
-  }, [copyOfGenerateSeed, gemColorArray, generatedSeedArray])
+  // }, [copyOfGenerateSeed, gemColorArray, generatedSeedArray])
   const generateDivs = generatedSeedArray.map((letter, index) => {
     // if (Array.isArray(letter)) {
     //   

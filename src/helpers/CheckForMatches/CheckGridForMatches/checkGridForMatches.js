@@ -99,6 +99,7 @@ export function replaceGrid(seedStateArray, gemColorArray) {
       for (let index = checkedMatchesColumns; index > 23; index -= 8) {
         copyOfGenerateSeed.splice(index, 1, unalteredCopyOfGeneratedSeed[index - 24])
         newStartingIndexForNewColors = index;
+        buffer.push(copyOfGenerateSeed)
       }
       console.log("LINE 136", newStartingIndexForNewColors)
       // // Generates new colors for the first three of the matched column
@@ -134,6 +135,7 @@ export function replaceGrid(seedStateArray, gemColorArray) {
       for (let index = checkedMatchesRows; index > 7; index -= 8) {
         copyOfGenerateSeed.splice(index, 3, unalteredCopyOfGeneratedSeed[index - 8], unalteredCopyOfGeneratedSeed[index - 7], unalteredCopyOfGeneratedSeed[index - 6])
         newStartingIndexForNewColors = index;
+        buffer.push(copyOfGenerateSeed)
       }
       // Generates new colors
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
@@ -149,8 +151,8 @@ export function replaceGrid(seedStateArray, gemColorArray) {
   if(buffer.length === 0){
     return
   } else {
-    let newArray = replaceGrid(buffer.at(-1))
-    return buffer.concat(newArray)
+    // let newArray = replaceGrid(buffer.at(-1))
+    return buffer
   }
   // 
   // if matchMade === true
