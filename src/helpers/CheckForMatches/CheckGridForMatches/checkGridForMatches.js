@@ -2,7 +2,6 @@ import { checkForMatchesColumnsThree } from "../CheckForMatchesColumns/checkForM
 import { checkForMatchesRowsThree } from "../CheckForMatchesRows/checkForMatchesRows"
 import { randomIntGenerator } from "../../randomIntGenerator"
 // Send each new grid in here after matches are checked
-let buffer = [];
 // To calculate score, for every grid in the buffer array run the setScore function as well.
 
 // First iteration would be running the state that exists
@@ -77,6 +76,7 @@ let buffer = [];
 // }
 export function replaceGrid(seedStateArray, gemColorArray) {
   let buffer = [];
+  buffer.push(seedStateArray);
   // Run check for matches once and n+1 times instead of using setInterval
   let checkedMatchesRows = checkForMatchesRowsThree([...seedStateArray])
   let checkedMatchesColumns = checkForMatchesColumnsThree([...seedStateArray])
@@ -101,7 +101,7 @@ export function replaceGrid(seedStateArray, gemColorArray) {
         newStartingIndexForNewColors = index;
         buffer.push(copyOfGenerateSeed)
       }
-      console.log("LINE 136", newStartingIndexForNewColors)
+      // console.log("LINE 136", newStartingIndexForNewColors)
       // // Generates new colors for the first three of the matched column
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 1, gemColorArray[randomIntGenerator(5)])
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 16, 1, gemColorArray[randomIntGenerator(5)])
@@ -125,7 +125,7 @@ export function replaceGrid(seedStateArray, gemColorArray) {
     if (checkedMatchesRows < 8) {
       
       copyOfGenerateSeed.splice(checkedMatchesRows, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-      console.log("inside if", checkedMatchesRows)
+      // console.log("inside if", checkedMatchesRows)
       // setScore(prev => prev += 3)
       // setSeedStateArray(copyOfGenerateSeed)
       // push new grid into buffer
@@ -139,20 +139,21 @@ export function replaceGrid(seedStateArray, gemColorArray) {
       }
       // Generates new colors
       copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-      console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
+      // console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
       // setScore(prev => ({...prev, ammo: prev.ammo += 3 }))
       // setSeedStateArray(copyOfGenerateSeed)
       // push new grid into buffer
       buffer.push(copyOfGenerateSeed)
     }
   }
+  console.log("Inside",buffer)
 // Now that every version of it has been pushed into the buffer
 // Recurssion rerun the function for replaceGrid(buffer.at(-1))
-  if(buffer.length === 0){
-    return
+  if(buffer.length === 1){
+    return []
   } else {
-    // let newArray = replaceGrid(buffer.at(-1))
-    return buffer
+    let newArray = replaceGrid(buffer.at(-1), gemColorArray)
+    return buffer.concat(newArray)
   }
   // 
   // if matchMade === true

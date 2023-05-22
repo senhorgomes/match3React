@@ -91,18 +91,37 @@ function Generator() {
     //figure out how to set array
     // generatedSeedArray[replacedGem.id] = selectedGem.color
     // generatedSeedArray[selectedGem.id] = replacedGem.color
-
+    
     // {"image":red, "color":"red" }
     copyOfGenerateSeed.splice(replacedGem.id, 1, {"image":selectedGem.color, "color":selectedGem.name})
     copyOfGenerateSeed.splice(selectedGem.id, 1, {"image":replacedGem.color, "color":replacedGem.name})
-    // console.log("copy", copyOfGenerateSeed)
-    // generatedSeedArray[replacedGem.id] = selectedGem.color
-    // generatedSeedArray[selectedGem.id] = replacedGem.color
+
     setMovedItem(true)
-    setGeneratedSeedArray(copyOfGenerateSeed)
+    // setGeneratedSeedArray(copyOfGenerateSeed)
+    
+    // const imagesOfGrid = replaceGrid(generatedSeedArray, gemColorArray);
+    // let timerForReplacementOfGrids = 500;
+    // if (!imagesOfGrid) return;
+    // imagesOfGrid.forEach((image)=>{
+    //   setTimeout(()=>{
+    //     setGeneratedSeedArray(image);
+    //     console.log("image set", timerForReplacementOfGrids);
+    //     timerForReplacementOfGrids += 1000;
+    //   }, timerForReplacementOfGrids)
+    // })
     // checkForMatchesRowsThree(generatedSeedArray)
     setSelectedGem({})
     setReplacedGem({})
+    const imagesOfGrid = replaceGrid(copyOfGenerateSeed, gemColorArray)
+    let timerForReplacementOfGrids = 1000;
+    console.log(imagesOfGrid)
+    imagesOfGrid.forEach((image)=>{
+      setTimeout(()=>{
+        setGeneratedSeedArray(image);
+        console.log("image set", timerForReplacementOfGrids);
+      }, timerForReplacementOfGrids)
+      timerForReplacementOfGrids += 1000;
+    })
   }
   function dragDrop(e) {
     //dropped on
@@ -114,25 +133,14 @@ function Generator() {
     // copyOfGenerateSeed.splice(selectedGem.id, 0, selectedGem.color)
     // trying to set it directly but it doesn't work
     // generatedSeedArray[selectedGem.id] = selectedGem.color
+    
   }
   // test one make it so when he state is updated run the check function
   useEffect(() => {
     generatedSeed()
 
   }, [])
-  useEffect(()=> {
-    if(movedItem){
-
-      const imagesOfGrid = replaceGrid(generatedSeedArray, gemColorArray);
-        let timerForReplacementOfGrids = 1000;
-        if (!imagesOfGrid) return;
-        imagesOfGrid.forEach((image)=>{
-          setTimeout(()=>{setGeneratedSeedArray(image)
-            timerForReplacementOfGrids += 1000;
-          }, timerForReplacementOfGrids)
-        })
-    }
-  }, [generatedSeedArray])
+ 
   // Bug: when a match is made and the new colors that replace the matched ones create a new match, it doesnt replace it but instead creates an infinite loop
   // useEffect(() => {
   //   // Idea is that everytime if it is going to check for matches in the array, regardless if something was dragged or not
