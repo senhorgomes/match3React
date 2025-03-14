@@ -9,6 +9,8 @@ function Generator() {
   const [generatedSeedArray, setGeneratedSeedArray] = useState([]);
   const [selectedGem, setSelectedGem] = useState({});
   const [replacedGem, setReplacedGem] = useState({});
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedGemId, setDraggedGemId] = useState(null);
   // Score needs to put the amount of stats you have
   // use those variables as a bar
   const [score, setScore] = useState(0);
@@ -76,44 +78,108 @@ function Generator() {
   // console.log("withing generated seed", generatedSeedArray)
 
   function dragStart(e) {
-    // console.log("dragStart",e.target.className)
-    // setSelectedGem(e.target.className);
     setSelectedGem({ color: e.target.src, id: e.target.id });
+    setIsDragging(true);
+    setDraggedGemId(e.target.id);
+    
+    // Add visual feedback for the dragged element
+    e.target.classList.add('dragging');
+    
+    // Set the drag image (this helps with the visual appearance during drag)
+    if (e.dataTransfer) {
+      const dragIcon = document.createElement('img');
+      dragIcon.src = e.target.src;
+      dragIcon.style.width = '50px';
+      dragIcon.style.height = '50px';
+      dragIcon.style.opacity = '0.7';
+      document.body.appendChild(dragIcon);
+      e.dataTransfer.setDragImage(dragIcon, 25, 25);
+      
+      // Clean up the temporary element
+      setTimeout(() => document.body.removeChild(dragIcon), 0);
+    }
   }
+
+  function dragEnd(e) {
+    // Remove visual feedback
+    const draggedElement = document.getElementById(draggedGemId);
+    if (draggedElement) {
+      draggedElement.classList.remove('dragging');
+    }
+    
+    setIsDragging(false);
+    
+    // Only perform the swap if we have both gems selected
+    if (Object.keys(replacedGem).length > 0 && Object.keys(selectedGem).length > 0) {
+      // Check if the gems are adjacent
+      const selectedId = parseInt(selectedGem.id);
+      const replacedId = parseInt(replacedGem.id);
+      
+      const isAdjacent = 
+        (Math.abs(selectedId - replacedId) === 1 && Math.floor(selectedId / 8) === Math.floor(replacedId / 8)) || // Same row
+        (Math.abs(selectedId - replacedId) === 8); // Same column
+      
+      if (isAdjacent) {
+        copyOfGenerateSeed.splice(replacedGem.id, 1, selectedGem.color);
+        copyOfGenerateSeed.splice(selectedGem.id, 1, replacedGem.color);
+        setGeneratedSeedArray(copyOfGenerateSeed);
+        
+        // Add a flash effect to the swapped gems
+        const replacedElement = document.getElementById(replacedGem.id);
+        const selectedElement = document.getElementById(selectedGem.id);
+        
+        if (replacedElement && selectedElement) {
+          replacedElement.classList.add('gem-swapped');
+          selectedElement.classList.add('gem-swapped');
+          
+          setTimeout(() => {
+            replacedElement.classList.remove('gem-swapped');
+            selectedElement.classList.remove('gem-swapped');
+          }, 300);
+        }
+      }
+    }
+    
+    // Reset the selected gems
+    setDraggedGemId(null);
+    setSelectedGem({});
+    setReplacedGem({});
+  }
+
+  function dragDrop(e) {
+    e.preventDefault();
+    // Only set the replaced gem if it's not the same as the selected gem
+    if (e.target.id !== draggedGemId) {
+      setReplacedGem({ color: e.target.src, id: e.target.id });
+      
+      // Add visual feedback for the drop target
+      e.target.classList.add('drop-target');
+      setTimeout(() => {
+        e.target.classList.remove('drop-target');
+        e.target.classList.remove('drag-over');
+      }, 100);
+    }
+  }
+
+  function dragOver(e) {
+    e.preventDefault();
+    // Add hover effect only if it's a different gem
+    if (e.target.classList.contains('gem') && e.target.id !== draggedGemId) {
+      e.target.classList.add('drag-over');
+    }
+  }
+
+  function dragLeave(e) {
+    // Remove hover effect
+    e.target.classList.remove('drag-over');
+  }
+
+  // ... existing code ...
+
   const copyOfGenerateSeed = [...generatedSeedArray];
   // useEffect(() => {
   //   setGeneratedSeedArray(copyOfGenerateSeed)
   // }, [setSelectedGem])
-  function dragEnd(e) {
-    // e.target.setAttribute("class", replacedGem)
-    //figure out how to set array
-    // generatedSeedArray[replacedGem.id] = selectedGem.color
-    // generatedSeedArray[selectedGem.id] = replacedGem.color
-
-    // console.log("replaced", generatedSeedArray[replacedGem.id])
-    // console.log("selected", selectedGem)
-    // console.log(copyOfGenerateSeed)
-    copyOfGenerateSeed.splice(replacedGem.id, 1, selectedGem.color)
-    copyOfGenerateSeed.splice(selectedGem.id, 1, replacedGem.color)
-    // console.log("copy", copyOfGenerateSeed)
-    // generatedSeedArray[replacedGem.id] = selectedGem.color
-    // generatedSeedArray[selectedGem.id] = replacedGem.color
-    setGeneratedSeedArray(copyOfGenerateSeed)
-    // checkForMatchesRowsThree(generatedSeedArray)
-    setSelectedGem({})
-    setReplacedGem({})
-  }
-  function dragDrop(e) {
-    //dropped on
-    //grab state of dropped on
-    //then setState 
-    // setReplacedGem({ color: e.target.className, id: e.target.id });
-    setReplacedGem({ color: e.target.src, id: e.target.id });
-    //trying to modify the generateSeed array via splice then set it
-    // copyOfGenerateSeed.splice(selectedGem.id, 0, selectedGem.color)
-    // trying to set it directly but it doesn't work
-    // generatedSeedArray[selectedGem.id] = selectedGem.color
-  }
   function check() {
     let checkedMatchesRows = checkForMatchesRowsThree([...generatedSeedArray])
     let checkedMatchesColumns = checkForMatchesColumnsThree([...generatedSeedArray])
@@ -221,27 +287,21 @@ function Generator() {
 
   }, [copyOfGenerateSeed, gemColorArray, generatedSeedArray])
   const generateDivs = generatedSeedArray.map((letter, index) => {
-    // if (Array.isArray(letter)) {
-    //   
-    // } else {
-    //   return letter
-    // }
-    //was a div
     return <img
       key={index}
       src={letter}
       draggable="true"
-      onDragLeave={(e) => e.preventDefault()}
+      onDragLeave={dragLeave}
       onDragEnter={(e) => e.preventDefault()}
-      onDragOver={(e) => e.preventDefault()}
+      onDragOver={dragOver}
       onDragStart={dragStart}
       onDragEnd={dragEnd}
       onDrop={dragDrop}
       id={index}
-      className="gem"
-    />
-
-  })
+      className={`gem ${draggedGemId === index.toString() ? 'dragging' : ''}`}
+      alt={`gem-${index}`}
+    />;
+  });
   // checkForMatchesRowsThree(generatedSeedArray)
 
   return (

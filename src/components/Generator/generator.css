@@ -10,7 +10,9 @@
   height: 60px;
   width: 60px;
   /* border-radius: 50%; */
-  margin: 5px
+  margin: 5px;
+  transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 .red {
   /* background-color: red; */
@@ -70,4 +72,65 @@
   background-color: green;
   height: 100%;
   width: 0%;
+}
+.gem {
+  transition: all 0.2s ease; /* Smooth transition for all changes */
+}
+
+.gem.dragging {
+  opacity: 0.5; /* Fade effect when dragging */
+  transform: scale(1.1); /* Slightly enlarge */
+}
+
+.gem.selected {
+  border: 2px solid white; /* Highlight when selected */
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* Glow effect */
+}
+
+.gem.dropped {
+  animation: dropBounce 0.3s ease; /* Bounce effect on drop */
+}
+
+@keyframes dropBounce {
+  0% { transform: scale(1.1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.gem:hover {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.dragging {
+  opacity: 0.6;
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.drag-over {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+  z-index: 5;
+}
+
+.drop-target {
+  animation: pulse 0.3s ease;
+}
+
+.gem-swapped {
+  animation: swap-flash 0.3s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes swap-flash {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.5); }
+  100% { filter: brightness(1); }
 }
