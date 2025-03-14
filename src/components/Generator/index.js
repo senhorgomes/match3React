@@ -39,41 +39,39 @@ function Generator() {
 
   //how to return divs?
   const generatedSeed = () => {
+    // Initialize the 2D array with empty arrays for each row
+    const yArray = Array(8).fill().map(() => []);
+    
     for (let y = 0; y < 8; y++) {
-      yArray.push([]);
       for (let x = 0; x < 8; x++) {
-        let randomNum = randomIntGenerator(5)
-        if ((x >= 2
-          && (yArray[y][x - 1] === gemColorArray[randomNum])
-          && (yArray[y][x - 2] === gemColorArray[randomNum])
-        ) ||
-          (
-            y >= 2
-            && (yArray[y - 1][x] === gemColorArray[randomNum])
-            && (yArray[y - 2][x] === gemColorArray[randomNum])
-          )) {
+        let randomNum = randomIntGenerator(5);
+        const horizontalMatch = x >= 2 && 
+          yArray[y][x - 1] === gemColorArray[randomNum] && 
+          yArray[y][x - 2] === gemColorArray[randomNum];
+        
+        const verticalMatch = y >= 2 && 
+          yArray[y - 1][x] === gemColorArray[randomNum] && 
+          yArray[y - 2][x] === gemColorArray[randomNum];
+        
+        // If we would create a match, choose a different color
+        if (horizontalMatch || verticalMatch) {
+          // Avoid the current color by picking another one
+          let newRandomNum;
           if (randomNum === 0) {
-            randomNum = randomIntGenerator(4) + 1
-            yArray[y].push(gemColorArray[randomNum]);
+            newRandomNum = randomIntGenerator(4) + 1; // Pick from 1-5 instead of 0
           } else {
-            yArray[y].push(gemColorArray[randomIntGenerator(randomNum)]);
+            newRandomNum = randomIntGenerator(randomNum); // Pick from 0 to randomNum-1
           }
+          yArray[y].push(gemColorArray[newRandomNum]);
         } else {
           yArray[y].push(gemColorArray[randomNum]);
         }
       }
     }
-    const gemArray = [];
-    const finalGemArray = gemArray.concat(yArray[0],
-      yArray[1],
-      yArray[2],
-      yArray[3],
-      yArray[4],
-      yArray[5],
-      yArray[6],
-      yArray[7]
-    )
-    setGeneratedSeedArray(finalGemArray)
+    
+    // Flatten the 2D array into a 1D array
+    const finalGemArray = yArray.flat();
+    setGeneratedSeedArray(finalGemArray);
   }
   // console.log("withing generated seed", generatedSeedArray)
 
@@ -255,30 +253,6 @@ function Generator() {
     // Idea is that everytime if it is going to check for matches in the array, regardless if something was dragged or not
     const checkingIntervalForMatches = setInterval(() => {
       console.log(checkForMatchesRowsThree([...generatedSeedArray]));
-      //This returns 5
-      //   if(checkForMatchesRowsThree([...generatedSeedArray])){
-      //     let checkedMatchesRows = checkForMatchesRowsThree([...generatedSeedArray])
-      // const originalCopyOfGeneratedSeed = [...copyOfGenerateSeed]
-      // let newStartingIndexForNewColors = 0;
-
-      // // Generates new colors
-      // if(newStartingIndexForNewColors < 8){
-      //   copyOfGenerateSeed.splice(newStartingIndexForNewColors, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-      //   console.log("inside if", checkedMatchesRows)
-      //   setScore(prev => prev += 3)
-      //   setGeneratedSeedArray(copyOfGenerateSeed)
-      // } else {
-      //     for (let index = checkedMatchesRows; index > 7; index -= 8) {
-      //       console.log(index)
-      //       copyOfGenerateSeed.splice(index, 3, originalCopyOfGeneratedSeed[index-8], originalCopyOfGeneratedSeed[index-7], originalCopyOfGeneratedSeed[index-6])
-      //       newStartingIndexForNewColors = index;
-      //     }
-      //     copyOfGenerateSeed.splice(newStartingIndexForNewColors - 8, 3, gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)], gemColorArray[randomIntGenerator(5)])
-      //     console.log(copyOfGenerateSeed, checkedMatchesRows - 8)
-      //     setScore(prev => prev += 3)
-      //     setGeneratedSeedArray(copyOfGenerateSeed)
-      //   }
-      //   }
       checkGridForMatches(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore)
       document.getElementById("healthbar").style.setProperty('width',`${score}%`);
     }, 250)
