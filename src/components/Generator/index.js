@@ -172,8 +172,6 @@ function Generator() {
     e.target.classList.remove('drag-over');
   }
 
-  // ... existing code ...
-
   const copyOfGenerateSeed = [...generatedSeedArray];
   // useEffect(() => {
   //   setGeneratedSeedArray(copyOfGenerateSeed)
@@ -250,16 +248,21 @@ function Generator() {
   }, [])
   // Bug: when a match is made and the new colors that replace the matched ones create a new match, it doesnt replace it but instead creates an infinite loop
   useEffect(() => {
-    // Idea is that everytime if it is going to check for matches in the array, regardless if something was dragged or not
+    // Check for matches in the grid at regular intervals
     const checkingIntervalForMatches = setInterval(() => {
-      console.log(checkForMatchesRowsThree([...generatedSeedArray]));
-      checkGridForMatches(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore)
-      document.getElementById("healthbar").style.setProperty('width',`${score}%`);
-    }, 250)
-    // check()
-    return () => clearInterval(checkingIntervalForMatches)
+      // Check for matches and update the game state
+      checkGridForMatches(generatedSeedArray, setGeneratedSeedArray, gemColorArray, setScore);
+      
+      // Update the health/score bar width based on current score
+      const healthBar = document.getElementById("healthbar");
+      if (healthBar) {
+        healthBar.style.setProperty('width', `${score}%`);
+      }
+    }, 250);
 
-  }, [copyOfGenerateSeed, gemColorArray, generatedSeedArray])
+    // Clean up interval on component unmount
+    return () => clearInterval(checkingIntervalForMatches);
+  }, [generatedSeedArray, gemColorArray, score]);
   const generateDivs = generatedSeedArray.map((letter, index) => {
     return <img
       key={index}
